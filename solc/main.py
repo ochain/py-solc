@@ -53,6 +53,10 @@ def get_solc_version(**kwargs):
     return version_match.group()
 
 
+def _strip_contract_filename(with_filename):
+    return with_filename.split(':')[1]
+
+
 def _parse_compiler_output(stdoutdata, compiler_version):
     output = json.loads(stdoutdata)
 
@@ -67,7 +71,7 @@ def _parse_compiler_output(stdoutdata, compiler_version):
     sorted_contracts = sorted(contracts.items(), key=lambda c: c[0])
 
     return {
-        contract_name: {
+        _strip_contract_filename(contract_name): {
             'abi': contract_data['abi'],
             'code': add_0x_prefix(contract_data['bin']),
             'code_runtime': add_0x_prefix(contract_data['bin-runtime']),
